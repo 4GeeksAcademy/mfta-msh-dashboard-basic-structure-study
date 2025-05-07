@@ -1,5 +1,5 @@
 // Import necessary components and functions from react-router-dom.
-
+import React from "react";
 import {
     createBrowserRouter,
     createRoutesFromElements,
@@ -9,6 +9,10 @@ import { Layout } from "./pages/Layout";
 import { Home } from "./pages/Home";
 import { Single } from "./pages/Single";
 import { Demo } from "./pages/Demo";
+import AdminLayout from "./pages/AdminLayout";
+import ProductsTable from "./components/admin-dashboard/ProductsTable";
+import UsersTable from "./components/admin-dashboard/UsersTable";
+import Dashboard from "./components/admin-dashboard/Dashboard";
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
@@ -25,6 +29,13 @@ export const router = createBrowserRouter(
         <Route path= "/" element={<Home />} />
         <Route path="/single/:theId" element={ <Single />} />  {/* Dynamic route for single items */}
         <Route path="/demo" element={<Demo />} />
+
+        {/* Admin Routes: Defines routes for the admin section. */}
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="/admin/products" element={<ProductsTable />} />
+          <Route path="/admin/users" element={<UsersTable />} />
+        </Route>
       </Route>
     )
 );

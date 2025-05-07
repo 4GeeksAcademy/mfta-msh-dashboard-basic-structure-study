@@ -1,3 +1,4 @@
+import React from "react"
 import { Outlet } from "react-router-dom/dist"
 import ScrollToTop from "../components/ScrollToTop"
 import { Navbar } from "../components/Navbar"
@@ -7,9 +8,11 @@ import { Footer } from "../components/Footer"
 export const Layout = () => {
     return (
         <ScrollToTop>
-            <Navbar />
+            <div className="min-vh-100 d-flex flex-column justify-content-between">
+                <Navbar />
                 <Outlet />
-            <Footer />
+                <Footer />
+            </div>
         </ScrollToTop>
     )
 }
