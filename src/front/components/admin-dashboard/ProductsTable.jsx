@@ -2,7 +2,9 @@ import React from 'react'
 
 const ProductsTable = () => {
   return (
-    <div>ProductsTable</div>
+    <div>
+      <h2 className='fs-5 fw-semibold'>Products Table</h2>
+    </div>
   )
 }
 

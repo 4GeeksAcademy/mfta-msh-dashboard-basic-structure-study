@@ -24,7 +24,7 @@ const AdminLayout = () => {
         adminIsLoggedIn &&
         <div className='d-flex align-items-start bg-light' style={{ height: '95vh' }}>
           <Sidebar />
-          <div className="d-flex p-3 p-md-4 overflow-y-scroll w-100 h-100">
+          <div className="d-flex p-3 px-md-4 px-lg-5 py-lg-4 overflow-y-scroll w-100 h-100">
             <Outlet />
           </div>
         </div>

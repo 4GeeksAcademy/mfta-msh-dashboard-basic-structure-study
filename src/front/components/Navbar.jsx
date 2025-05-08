@@ -15,9 +15,9 @@ export const Navbar = () => {
 	}
 
 	return (
-		<nav className="navbar navbar-dark bg-dark navbar-expand-lg">
+		<nav className="navbar navbar-expand-lg shadow-sm">
 			<div className="container-fluid">
-				<Link to="/">
+				<Link to="/" className="text-decoration-none">
 					<span className="navbar-brand mb-0 h1">Dashboard Study</span>
 				</Link>
 				<div className="ml-auto d-flex justify-content-end gap-2">
