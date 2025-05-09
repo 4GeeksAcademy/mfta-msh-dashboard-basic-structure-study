@@ -6,6 +6,7 @@ from flask import Flask, request, jsonify, url_for, send_from_directory
 from flask_migrate import Migrate
 from flask_swagger import swagger
 from flask_bcrypt import Bcrypt
+from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
 from api.utils import APIException, generate_sitemap
 from api.models import db, User, RoleEnum
 from api.routes import api
@@ -20,6 +21,11 @@ static_file_dir = os.path.join(os.path.dirname(
 app = Flask(__name__)
 app.url_map.strict_slashes = False
 bcrypt = Bcrypt(app)
+
+# Setup the Flask-JWT-Extended extension
+app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
+jwt = JWTManager(app)
+
 
 # database condiguration
 db_url = os.getenv("DATABASE_URL")
@@ -142,6 +148,44 @@ def register_user():
         db.session.close()
     
 
+# user login endpoint
+@app.route("/login", methods=["POST"])
+def login_user():
+    """
+    Example of body request:
+    {
+        "email": "string",
+        "password": "string"
+    }
+    """
+    body = request.get_json()
+    if not body:
+        return jsonify({"msg": "Missing data"}), 400
+    if "email" not in body:
+        return jsonify({"msg": "Missing email"}), 400
+    if "password" not in body:
+        return jsonify({"msg": "Missing password"}), 400
+
+    email = body["email"]
+    password = body["password"]
+
+    user = User.query.filter_by(email=email).first()
+
+    if user and bcrypt.check_password_hash(user.password, password):
+        access_token = create_access_token(identity=str(user.id))
+        return jsonify({
+            "access_token": access_token,
+            "user": {
+                "id": str(user.id),
+                "email": user.email,
+                "username": user.username,
+                "role": user.role,
+                "is_active": user.is_active
+            }
+        }), 200
+    else:
+        return jsonify({"msg": "Invalid email or password"}), 401
+    
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
