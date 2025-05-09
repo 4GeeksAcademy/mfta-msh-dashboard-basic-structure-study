@@ -24,8 +24,8 @@ export const Navbar = () => {
 					{
 						!store.user?.id && 
 						<>
-							<button className="btn btn-primary" onClick={handleAdminLogin}>Simulate Login as Admin</button>
-							<button className="btn btn-secondary" onClick={handleUserLogin}>Simulate Login as User</button>
+							<Link to="/login" className="btn btn-primary" >Login</Link>
+							<Link to="/register" className="btn btn-success">Register</Link>
 						</>
 					}
 
