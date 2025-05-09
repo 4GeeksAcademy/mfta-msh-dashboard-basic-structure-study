@@ -5,8 +5,9 @@ import os
 from flask import Flask, request, jsonify, url_for, send_from_directory
 from flask_migrate import Migrate
 from flask_swagger import swagger
+from flask_bcrypt import Bcrypt
 from api.utils import APIException, generate_sitemap
-from api.models import db
+from api.models import db, User, RoleEnum
 from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
@@ -18,6 +19,7 @@ static_file_dir = os.path.join(os.path.dirname(
     os.path.realpath(__file__)), '../public/')
 app = Flask(__name__)
 app.url_map.strict_slashes = False
+bcrypt = Bcrypt(app)
 
 # database condiguration
 db_url = os.getenv("DATABASE_URL")
@@ -64,6 +66,81 @@ def serve_any_other_file(path):
     response = send_from_directory(static_file_dir, path)
     response.cache_control.max_age = 0  # avoid cache memory
     return response
+
+
+# user registration endpoint
+@app.route("/register", methods=["POST"])
+def register_user():
+    """
+    Example of body request:
+    {
+        "email": "string",
+        "username": "string",
+        "password": "string", 
+        "role": "user",
+        "is_active": true
+    }
+
+    Constraints:
+    - email: string, required, unique
+    - username: string, required, unique
+    - password: string, required, at least 8 characters long
+    - role: string, optional, default "user", must be one of the following: "admin", "user"
+    - is_active: boolean, optional, default true
+
+    """
+    body = request.get_json()
+    if not body:
+        return jsonify({"msg": "Missing data"}), 400
+    if "email" not in body:
+        return jsonify({"msg": "Missing email"}), 400
+    if "username" not in body:
+        return jsonify({"msg": "Missing username"}), 400
+    if "password" not in body:
+        return jsonify({"msg": "Missing password"}), 400
+    
+    # verify if the password is at least 8 characters long
+    if len(body["password"]) < 8:
+        return jsonify({"msg": "Password must be at least 8 characters long"}), 400
+    # verify if the role is a valid role
+    if "role" in body and body["role"] not in RoleEnum.get_choices():
+        return jsonify({"msg": "Invalid role"}), 400
+    
+    # verify if the email is already in use
+    existing_user = User.query.filter_by(email=body["email"]).first()
+    if existing_user:
+        return jsonify({"msg": "Email already in use"}), 400
+    # verify if the username is already in use
+    existing_user = User.query.filter_by(username=body["username"]).first()
+    if existing_user:
+        return jsonify({"msg": "Username already in use"}), 400
+
+    email = body["email"]
+    username = body["username"]
+    password = body["password"]
+    role = body.get("role", "user")
+    is_active = body.get("is_active", True)
+
+    hashed_password = bcrypt.generate_password_hash(password).decode("utf-8")
+
+    new_user = User(
+        email=email,
+        username=username,
+        password=hashed_password,
+        role=role,
+        is_active=is_active
+    )
+
+    try:
+        db.session.add(new_user)
+        db.session.commit()
+        return jsonify({"msg": "User created successfully"}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"msg": "Error creating user", "error": str(e)}), 500
+    finally:
+        db.session.close()
+    
 
 
 # this only runs if `$ python src/main.py` is executed
