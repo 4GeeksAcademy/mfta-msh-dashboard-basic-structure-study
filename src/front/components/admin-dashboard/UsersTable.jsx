@@ -1,12 +1,25 @@
-import React, { useState } from 'react'
-import useGlobalReducer from '../../hooks/useGlobalReducer'
+import React, { useEffect, useState } from 'react'
 import EditUserModal from './EditUserModal'
 import DeleteUserModal from './DeleteUserModal'
 import AddUserModal from './AddUserModal'
+import { getUsersList } from '../../clientAPI'
 
 const UsersTable = () => {
-    const { store } = useGlobalReducer()
+    const [usersList, setUsersList] = useState([])
     const [selectedUser, setSelectedUser] = useState(null)
+
+    useEffect(() => {
+        // Fetch users from the API
+        const fetchUsers = async () => {
+            try {
+                const response = await getUsersList()
+                setUsersList(response)
+            } catch (error) {
+                console.error('Error fetching users:', error)
+            }
+        }
+        fetchUsers()
+    }, [])
 
     return (
         <div className="d-flex flex-column w-100 h-100">
@@ -18,20 +31,22 @@ const UsersTable = () => {
                 <thead>
                     <tr>
                         <th scope="col">ID</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">LastName</th>
+                        <th scope="col">Email</th>
                         <th scope="col">Username</th>
+                        <th scope="col">Role</th>
+                        <th scope="col">Status</th>
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {
-                        store.usersList?.map((user, index) => (
+                        usersList.map((user, index) => (
                             <tr key={user.id}>
                                 <th scope="row">{user.id}</th>
-                                <td>{user.name}</td>
-                                <td>{user.lastName}</td>
+                                <td>{user.email}</td>
                                 <td>{user.username}</td>
+                                <td>{user.role}</td>
+                                <td>{user.is_active ? "active" : "inactive"}</td>
                                 <td>
                                     <div className="dropdown">
                                         <button className="btn btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
