@@ -185,6 +185,38 @@ def login_user():
         }), 200
     else:
         return jsonify({"msg": "Invalid email or password"}), 401
+
+
+# Get all users endpoint
+@app.route("/users", methods=["GET"])
+@jwt_required()
+def get_users():
+    current_user = get_jwt_identity()
+    user = User.query.filter_by(id=current_user).first()
+    if user.role != "admin":
+        return jsonify({"msg": "Unauthorized"}), 403
+
+    users = User.query.all()
+    users_serialized = [user.serialize() for user in users]
+    return jsonify(users_serialized), 200
+
+
+# Get user by id endpoint
+@app.route("/users/<int:user_id>", methods=["GET"])
+@jwt_required()
+def get_user(user_id):
+    current_user_id = get_jwt_identity()
+    user = User.query.filter_by(id=int(current_user_id)).first()
+    if int(current_user_id) != user_id and user.role != "admin":
+        # if the user is not the same as the one in the token and is not an admin
+        return jsonify({"msg": "Unauthorized"}), 403
+
+    user = User.query.filter_by(id=user_id).first()
+    if not user:
+        return jsonify({"msg": "User not found"}), 404
+    return jsonify(user.serialize()), 200
+
+
     
 
 # this only runs if `$ python src/main.py` is executed
