@@ -7,6 +7,7 @@ from flask_migrate import Migrate
 from flask_swagger import swagger
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
+from flask_cors import CORS
 from api.utils import APIException, generate_sitemap
 from api.models import db, User, RoleEnum
 from api.routes import api
@@ -21,6 +22,7 @@ static_file_dir = os.path.join(os.path.dirname(
 app = Flask(__name__)
 app.url_map.strict_slashes = False
 bcrypt = Bcrypt(app)
+CORS(app)
 
 # Setup the Flask-JWT-Extended extension
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
