@@ -22,6 +22,17 @@ export default function storeReducer(store, action = {}) {
             role: action.payload.role
           }
         }
+      case 'logout':
+        return {
+          ...store,
+          user: {
+            ...store.user,
+            id: null,
+            username: null,
+            email: null,
+            role: null
+          }
+        }
     default:
       throw Error('Unknown action.');
   }    

@@ -6,14 +6,6 @@ export const Navbar = () => {
 	const navigate = useNavigate();
 	const { store, dispatch } = useGlobalReducer();
 
-	const handleAdminLogin = () => {
-		dispatch({type: "simulate_admin_login"});
-	}
-
-	const handleUserLogin = () => {
-		dispatch({type: "simulate_user_login"});
-	}
-
 	return (
 		<nav className="navbar navbar-expand-lg shadow-sm">
 			<div className="container-fluid">
@@ -33,7 +25,7 @@ export const Navbar = () => {
 						store.user?.id &&
 						<>
 							<span className="text-white">Welcome, {store.user.username}</span>
-							<button className="btn btn-danger" onClick={() => dispatch({type: "simulate_logout"})}>Simulate Logout</button>
+							<button className="btn btn-danger" onClick={() => dispatch({type: "logout"})}>Logout</button>
 						</>
 					}
 					{
