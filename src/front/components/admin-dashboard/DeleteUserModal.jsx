@@ -20,7 +20,7 @@ const DeleteUserModal = ({ modalId, selectedUser, setSelectedUser }) => {
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={resetSelectedUser} >Close</button>
-                            <button type="submit" className="btn btn-danger">Delete</button>
+                            <button type="submit" className="btn btn-danger" data-bs-dismiss="modal">Delete</button>
                         </div>
 
                 </div>

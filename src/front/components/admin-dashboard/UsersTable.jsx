@@ -12,7 +12,7 @@ const UsersTable = () => {
         <div className="d-flex flex-column w-100 h-100">
             <h2 className='fs-5 fw-semibold'>Users Table</h2>
             <div className="d-flex justify-content-end py-3">
-                <button className="btn btn-sm btn-primary">Add User</button>
+                <button className="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">Add User</button>
             </div>
             <table className="table table-striped table-hover table-bordered mb-4">
                 <thead>
@@ -42,7 +42,6 @@ const UsersTable = () => {
                                             <li><button className="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#deleteModal" onClick={()=> {setSelectedUser(user)}}><i className="fa-solid fa-trash-can me-2"></i> Delete</button></li>
                                         </ul>
                                     </div>
-
                                 </td>
                             </tr>
                         ))
@@ -54,7 +53,6 @@ const UsersTable = () => {
             <AddUserModal modalId="addModal" />
             <EditUserModal modalId="editModal" selectedUser={selectedUser} setSelectedUser={setSelectedUser}/>
             <DeleteUserModal modalId="deleteModal" selectedUser={selectedUser} setSelectedUser={setSelectedUser} />
-
         </div>
     )
 }
