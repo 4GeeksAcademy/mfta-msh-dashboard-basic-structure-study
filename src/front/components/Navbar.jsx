@@ -12,28 +12,28 @@ export const Navbar = () => {
 				<Link to="/" className="text-decoration-none">
 					<span className="navbar-brand mb-0 h1">Dashboard Study</span>
 				</Link>
-				<div className="ml-auto d-flex justify-content-end gap-2">
+				<div className="ml-auto d-flex justify-content-end gap-3 align-items-center">
 					{
 						!store.user?.id && 
 						<>
-							<Link to="/login" className="btn btn-primary" >Login</Link>
-							<Link to="/register" className="btn btn-success">Register</Link>
+							<Link to="/login" >Login</Link>
+							<Link to="/register" >Register</Link>
 						</>
 					}
 
 					{
-						store.user?.id &&
-						<>
-							<span className="text-white">Welcome, {store.user.username}</span>
-							<button className="btn btn-danger" onClick={() => dispatch({type: "logout"})}>Logout</button>
-						</>
-					}
-					{
-						store.user?.role === "admin" &&
-						<Link to="/admin" className="btn btn-info">
+						store.user?.id && store.user?.role === "admin" &&
+						<Link to="/admin" className="">
 							Admin Dashboard
 						</Link>
 					}
+					{
+						store.user?.id &&
+						<>
+							<button className="btn btn-sm btn-outline-danger" onClick={() => dispatch({type: "logout"})}>Logout</button>
+						</>
+					}
+					
 					
 				</div>
 			</div>

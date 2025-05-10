@@ -34,7 +34,7 @@ const Login = () => {
 
   return (
     <div className="d-flex flex-column w-100 h-100">
-      <h2 className='fs-5 fw-semibold'>Login</h2>
+      <h2 className='fs-5 fw-semibold text-center my-4'>Login</h2>
       <div className="d-flex justify-content-center align-items-center h-100">
         <form className="w-25" onSubmit={handleSubmit} >
           <div className="mb-3">

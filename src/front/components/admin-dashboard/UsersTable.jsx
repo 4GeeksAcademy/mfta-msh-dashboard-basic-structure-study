@@ -65,7 +65,7 @@ const UsersTable = () => {
             </table>
 
             {/* Modals */}
-            <AddUserModal modalId="addModal" />
+            <AddUserModal modalId="addModal"/>
             <EditUserModal modalId="editModal" selectedUser={selectedUser} setSelectedUser={setSelectedUser}/>
             <DeleteUserModal modalId="deleteModal" selectedUser={selectedUser} setSelectedUser={setSelectedUser} />
         </div>

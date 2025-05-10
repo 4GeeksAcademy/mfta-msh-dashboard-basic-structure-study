@@ -1,63 +1,91 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
+import { Modal } from 'bootstrap'
+import { registerUser } from '../../clientAPI'
 
 const AddUserModal = ({ modalId }) => {
-    const [user, setUser] = useState({ id: null, lastName: "", name: "", username: "", password: "" });
+    const [new_user, setNewUser] = useState({
+        email: "",
+        username: "",
+        password: "",
+        role: "user"
+    })
+    const { email, username, password } = new_user
 
-    const handleInputChange = (e) => {
+    const modalRef = useRef(null);
+
+    useEffect(() => {
+        const myModal = new Modal("#" + modalId);
+        modalRef.current = myModal;
+    }, []);
+
+    const handleChange = (e) => {
         const { id, value } = e.target;
-        setUser((prevUser) => ({
-            ...prevUser,
+        setNewUser((prevNewUser) => ({
+            ...prevNewUser,
             [id]: value
         }));
     }
 
     const handleReset = () => {
-        setUser({ id: null, lastName: "", name: "", username: "", password: "" });
+        setNewUser({
+            email: "",
+            username: "",
+            password: "",
+            role: "user"
+        });
     }
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // Handle form submission logic here
-        console.log('User updated:', user);
-        // Reset the form after successful submission
+    const handleClose = () => {
+        modalRef.current.hide();
         handleReset();
-        // Close the modal after successful submission
+    }
+
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const data = await registerUser(email, username, password);
+            if (data) {
+                alert("User registered successfully");
+                // Reset form and close the modal after successful registration
+                handleClose();
+            }
+        }
+        catch (error) {
+            alert("Error registering user");
+            console.error(error);
+        }
     }
 
     return (
-        <div className="modal fade" id={modalId} tabIndex={-1} aria-labelledby={`${modalId}Label`} aria-hidden="true">
+        <div ref={modalRef} className="modal fade" id={modalId} tabIndex={-1} aria-labelledby={`${modalId}Label`} aria-hidden="true">
             <div className="modal-dialog">
                 <div className="modal-content">
                     <div className="modal-header">
                         <h1 className="modal-title fs-5" id={`${modalId}Label`}>Create User</h1>
                         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={handleReset}></button>
                     </div>
-                    <form onSubmit={handleSubmit}>
+                    <form onSubmit={handleSubmit} >
                         <div className="modal-body">
-
                             <div className="mb-3">
-                                <label htmlFor="name" className="form-label">Name</label>
-                                <input type="text" className="form-control" id="name" value={user.name} onChange={handleInputChange} />
-                            </div>
-                            <div className="mb-3">
-                                <label htmlFor="lastName" className="form-label">Last Name</label>
-                                <input type="text" className="form-control" id="lastName" value={user.lastName} onChange={handleInputChange} />
+                                <label htmlFor="email" className="form-label">Email</label>
+                                <input type="email" className="form-control" id="email" required value={email} onChange={handleChange} />
                             </div>
                             <div className="mb-3">
                                 <label htmlFor="username" className="form-label">Username</label>
-                                <input type="text" className="form-control" id="username" value={user.username} onChange={handleInputChange} />
+                                <input type="text" className="form-control" id="username" value={username} required onChange={handleChange} />
                             </div>
                             <div className="mb-3">
                                 <label htmlFor="password" className="form-label">Password</label>
-                                <input type="password" className="form-control" id="password" value={user.password} onChange={handleInputChange} />
+                                <input type="password" className="form-control" id="password" required value={password} onChange={handleChange} />
                             </div>
                         </div>
-
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleReset} >Close</button>
-                            <button type="submit" className="btn btn-primary">Save changes</button>
+                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleReset}>Close</button>
+                            <button type="submit" className="btn btn-primary">Register</button>
                         </div>
                     </form>
+
                 </div>
             </div>
         </div >
